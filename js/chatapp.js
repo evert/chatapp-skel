@@ -120,6 +120,7 @@ _.extend(window.ChatApp.Connection.prototype, Backbone.Events, {
         $.ajax(this.serverUri + 'eventpoll?since=' + this.lastSequence + '&nickName=' + this.nickName + '&email=' + this.email, {
             dataType : 'json',
             complete : function(jqXHR, textStatus) {
+                self.trigger('repoll');
                 self.listen();
             },
             success : function(data) {
@@ -242,6 +243,7 @@ window.ChatApp.MessageListView = Backbone.View.extend({
   
     initialize: function() {
         this.collection.bind('add', _.bind(this.updateMessageList, this));
+        this.options.connection.bind('repoll', _.bind(this.scrollDown, this));
     },
     
     updateMessageList: function(model) {
@@ -250,13 +252,20 @@ window.ChatApp.MessageListView = Backbone.View.extend({
         var message = model.get('message');
         var gravatar = model.get('gravatar');
         
-        var li = $('<li></li>').addClass('template');
-        li.append($('<div></div>').addClass('nickName').text(nickname));
+        var li = $('<li></li>').addClass('template').addClass('clearfix');
+        
         li.append($('<img></img>').attr('src', gravatar));
-        li.append($('<time></time>').text(datetime));
+        li.append($('<span></span>').addClass('nickName').text(nickname));
+
+        li.append($('<time></time>').text(prettyDate(datetime)));
+        
         li.append($('<p></p>').text(message));
         
-        this.$('ul').append(li);
+        this.$('ul').append(li);   
+    },
+    
+    scrollDown: function() {
+        this.el.animate({scrollTop: this.$('ul').height()}, 800);
     }
   
 });
@@ -397,6 +406,7 @@ window.ChatApp.Application = Backbone.View.extend({
 
         this.messageListView = new ChatApp.MessageListView({
             collection: this.messageCollection,
+            connection: this.connection,
             el : this.$('section.messages')
         });
         this.messageInputView = new ChatApp.MessageInputView({

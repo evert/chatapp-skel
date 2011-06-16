@@ -97,6 +97,42 @@ section.messages {
     overflow: auto;
 }
 
+section.messages li {
+    width: 760px;
+    height: 95px;
+    margin: 10px;
+    border: 1px solid black;
+    background-color: #EEEEFF;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    padding-bottom: 5px;
+    -moz-box-shadow: 3px 3px 4px #000;
+    -webkit-box-shadow: 3px 3px 4px #000;
+    box-shadow: 3px 3px 4px #000;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');    
+}
+
+section.messages li img {
+    margin: 10px 10px 0 10px;
+    float: left;
+}
+
+section.messages span.nickName {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+section.messages time {
+    font-size: small;
+    font-style: italic;
+}
+
+section.messages p {
+    margin-top: 10px;
+}
+
 section.inputArea input {
     width: 796px;
     border: 1px solid #000099;
