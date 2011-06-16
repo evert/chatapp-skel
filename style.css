@@ -1,3 +1,25 @@
+/* Clearfix */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
 /* Simple resets */
 body {
     margin: 0;
@@ -11,10 +33,6 @@ ul,p, h1 {
     padding: 0;
     margin: 0;
     list-style: none;
-}
-
-.template {
-    display: none !important;
 }
 
 section.welcome {
@@ -52,15 +70,34 @@ section.welcome input {
     width: 250px;
 }
 
-section.userList ul {
-    position: absolute;
-    top: 0;
-    right: 0;
+section.userList {
+    display: block;
+    float: left;
     width: 200px;
-    clear: both;
+    height: 400px;
+    background-color: #3366AA;
+    overflow: auto;
+}
+
+section.userList li {
+    margin-left: 5px;
+    color: #FFFFFF;
 }
 
 section.userList img {
     width: 25px;
     margin-right: 5px;
+}
+
+section.messages {
+    display: block;
+    float: left;
+    width: 800px;
+    height: 400px;
+    overflow: auto;
+}
+
+section.inputArea input {
+    width: 796px;
+    border: 1px solid #000099;
 }

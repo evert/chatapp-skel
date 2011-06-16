@@ -134,7 +134,7 @@ _.extend(window.ChatApp.Connection.prototype, Backbone.Events, {
      */
     join : function(onSuccess) {
 
-        $.ajax(this.serverUri + 'join?nickName=' + this.nickName + '&email=' + this.email, { success: onSuccess });
+        $.ajax(this.serverUri + 'join?nickName=' + this.nickName + '&email=' + this.email, {success: onSuccess});
 
     },
 
@@ -181,7 +181,7 @@ _.extend(window.ChatApp.Connection.prototype, Backbone.Events, {
                     console.log('PART: ' + event.nickName);
                     this.userCollection.remove(
                         this.userCollection.find(
-                            function(item) { return item.get('nickName') === event.nickName; }
+                            function(item) {return item.get('nickName') === event.nickName;}
                         )
                     );
                     break;
@@ -240,6 +240,25 @@ window.ChatApp.parseISO8601 = function(str) {
  */
 window.ChatApp.MessageListView = Backbone.View.extend({
   
+    initialize: function() {
+        this.collection.bind('add', _.bind(this.updateMessageList, this));
+    },
+    
+    updateMessageList: function(model) {
+        var nickname = model.get('nickName');
+        var datetime = model.get('dateTime');
+        var message = model.get('message');
+        var gravatar = model.get('gravatar');
+        
+        var li = $('<li></li>').addClass('template');
+        li.append($('<div></div>').addClass('nickName').text(nickname));
+        li.append($('<img></img>').attr('src', gravatar));
+        li.append($('<time></time>').text(datetime));
+        li.append($('<p></p>').text(message));
+        
+        this.$('ul').append(li);
+    }
+  
 });
 
 
@@ -254,7 +273,19 @@ window.ChatApp.MessageListView = Backbone.View.extend({
  * ChatApp.connection 
  */
 window.ChatApp.MessageInputView = Backbone.View.extend({
+    events : {
+        "submit form" : "connect"
+    },
 
+    connect : function(evt) {
+
+        evt.preventDefault();
+        var inputField = this.$('input[name=message]');
+        var message = inputField.val();
+        
+        this.options.connection.message(message);
+        inputField.val('');
+    }
 });
     
 /**
