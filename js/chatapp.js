@@ -282,8 +282,10 @@ window.ChatApp.UserListView = Backbone.View.extend({
         ul.html('');
         
         event.collection.each(function(item) {
-            ul.append($('<li></li>').text(item.get('nickName')));
-            ul.append($('<img></img>').attr('src', item.get('gravatar')));
+            var li = $('<li></li>');
+            li.append($('<img></img>').attr('src', item.get('gravatar')));
+            li.append($('<span></span>').text(item.get('nickName')));
+            ul.append(li);
         });
     }
 

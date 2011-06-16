@@ -52,6 +52,15 @@ section.welcome input {
     width: 250px;
 }
 
-section.userList {
-    
+section.userList ul {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    clear: both;
+}
+
+section.userList img {
+    width: 25px;
+    margin-right: 5px;
 }
