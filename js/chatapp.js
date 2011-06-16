@@ -10,7 +10,7 @@ window.ChatApp = { };
 /**
  * The server to connect to
  */
-window.ChatApp.serverUri = 'http://localhost:8080/';
+window.ChatApp.serverUri = 'http://10.0.1.114:8080/';
 
 /**
  * Message Model
@@ -230,4 +230,164 @@ window.ChatApp.parseISO8601 = function(str) {
     return _date;
 };
 
-/** Your code goes here! **/
+/**
+ * MessageList view
+ * ================
+ *
+ * This view is responsible for updating the list of messages.
+ * You must pass a 'collection' option, which should be an instance of
+ * MessageCollection
+ */
+window.ChatApp.MessageListView = Backbone.View.extend({
+  
+});
+
+
+/**
+ * MessageInput view
+ * ================
+ *
+ * This view is responsible for the 'input' area, which allows the user to
+ * send a message to the chatroom.
+ *
+ * You must pass a 'connection' option, which should be an instance of
+ * ChatApp.connection 
+ */
+window.ChatApp.MessageInputView = Backbone.View.extend({
+
+});
+    
+/**
+ * UserList view
+ * ================
+ *
+ * This view is responsible for keeping the list of online users up to
+ * date. 
+ * You must pass a 'collection' option, which should be an instance of
+ * UserCollection
+ */
+window.ChatApp.UserListView = Backbone.View.extend({
+
+    initialize: function() {
+        this.collection.bind('add', _.bind(this.updateUserList, this));
+        this.collection.bind('remove', _.bind(this.updateUserList, this));
+    },
+    
+    updateUserList: function(event) {
+        if (event.collection === undefined) {
+            return;
+        }
+        
+        var ul = this.$('ul');
+        ul.html('');
+        
+        event.collection.each(function(item) {
+            ul.append($('<li></li>').text(item.get('nickName')));
+            ul.append($('<img></img>').attr('src', item.get('gravatar')));
+        });
+    }
+
+});
+
+/**
+ * The WelcomeView is responsible for handling the login screen
+ */
+window.ChatApp.WelcomeView = Backbone.View.extend({
+
+    events : {
+        "submit form" : "connect"
+    },
+
+    connect : function(evt) {
+
+        evt.preventDefault();
+        this.el.slideUp('slow');
+        var nickName = this.$('input[name=nickName]').val();
+        var email = this.$('input[name=email]').val();
+
+        this.trigger('connect', {
+            nickName : nickName,
+            email : email
+        });
+
+    }
+
+});
+
+/**
+ * The Application View
+ * ====================
+ *
+ * The Application View is basically the main Application controller, and
+ * is responsible for setting up all the other objects.
+ */
+window.ChatApp.Application = Backbone.View.extend({
+
+    messageCollection : null,
+    userCollection : null,
+
+    messageListView : null,
+    messageInputView : null,
+    userListView : null,
+    welcomeView : null,
+
+    connection : null,
+
+    nickName : null,
+    email : null,
+
+    el: 'body',
+
+    initialize : function() {
+
+        var self = this;
+
+        this.messageCollection = new ChatApp.MessageCollection();
+        this.userCollection = new ChatApp.UserCollection();
+
+
+
+        this.welcomeView = new ChatApp.WelcomeView({
+            el : this.$('section.welcome')
+        });
+        this.welcomeView.bind('connect', function(userInfo) {
+            self.nickName = userInfo.nickName;
+            self.email = userInfo.email;
+            self.initializeConnection();
+        });
+
+    },
+
+    initializeConnection : function() {
+
+        this.connection = new ChatApp.Connection(this.userCollection, this.messageCollection, this.nickName, this.email, ChatApp.serverUri);
+
+        this.messageListView = new ChatApp.MessageListView({
+            collection: this.messageCollection,
+            el : this.$('section.messages')
+        });
+        this.messageInputView = new ChatApp.MessageInputView({
+            connection: this.connection,
+            el: this.$('section.inputArea')
+        }); 
+        this.userListView = new ChatApp.UserListView({
+            collection: this.userCollection,
+            el: this.$('section.userList')
+        });
+
+
+    }
+
+});
+
+
+
+/**
+ * Using jQuery's DOM.ready to fire up the application.
+ */
+$(document).ready(function() {
+
+    window.ChatApp.application = new ChatApp.Application;
+
+
+});
