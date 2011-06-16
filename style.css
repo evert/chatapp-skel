@@ -2,7 +2,6 @@
 body {
     margin: 0;
     height: 100%;
-    background: grey;
     font-family: sans-serif;
     font-size: 14px;
 
@@ -17,3 +16,37 @@ ul,p, h1 {
     display: none !important;
 }
 
+section.welcome {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 70px;
+    background-color: #AACCFF;
+    padding-top: 10px;
+    border-bottom: 1px solid #000099;
+}
+
+section.welcome h1,
+section.welcome p
+{
+    margin-left: 10px;
+    color: #000099;
+}
+
+section.welcome form {
+    position: absolute;
+    top: 10px;
+    left: 500px;
+}
+
+section.welcome label {
+    display: block;
+    width: 200px;
+    float: left;
+}
+
+section.welcome input {
+    border: 1px solid #3366AA;
+    margin-bottom: 4px;
+    width: 250px;
+}
